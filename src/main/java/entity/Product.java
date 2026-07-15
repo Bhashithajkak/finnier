@@ -1,0 +1,39 @@
+package entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+    private String name;
+    @Column(columnDefinition = "TEXT")
+    private String description;
+    @Column(nullable = false)
+    private BigDecimal price;
+    private int quantity;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    public enum Status{
+        AVAILABLE,
+        OUT_OF_STOCK
+    }
+}
