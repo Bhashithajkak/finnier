@@ -1,4 +1,4 @@
-package entity;
+package com.example.finnier.entity;
 
 public enum PaymentMethod {
     Card,
