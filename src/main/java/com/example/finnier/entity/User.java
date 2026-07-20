@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +24,7 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private RoleType role;
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
     @CreationTimestamp
     @Column(updatable = false)

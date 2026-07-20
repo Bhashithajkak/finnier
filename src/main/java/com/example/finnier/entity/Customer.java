@@ -12,13 +12,14 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "customers")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Long userId;
+    private User user;
     private int loyaltyPoints;
     private LocalDate dateJoined;
 
