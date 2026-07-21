@@ -3,6 +3,7 @@ package com.example.finnier.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 import java.math.BigDecimal;
@@ -32,6 +33,8 @@ public class Product {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public enum Status{
         AVAILABLE,

@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
@@ -26,8 +27,8 @@ public class ProductService {
         return toResponseDto(productRepository.save(toProduct(createProductDto)));
     }
 
-    public List<ProductResponseDto> getAllProducts() {
-        return productRepository.findAll()
+    public List<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -97,7 +98,8 @@ public class ProductService {
                 product.getPrice(),
                 product.getQuantity(),
                 product.getStatus(),
-                product.getCreatedAt()
+                product.getCreatedAt(),
+                product.getUpdatedAt()
         );
     }
 }
