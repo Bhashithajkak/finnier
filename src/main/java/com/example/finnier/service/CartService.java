@@ -1,31 +1,38 @@
 package com.example.finnier.service;
 
 import com.example.finnier.entity.Cart;
+import com.example.finnier.entity.Customer;
 import com.example.finnier.repository.CartRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CartService {
 
     private final CartRepository cartRepository;
+    private final CustomerService customerService;
+
+    public CartService(CartRepository cartRepository, CustomerService customerService) {
+        this.cartRepository = cartRepository;
+        this.customerService = customerService;
+    }
 
     public Cart createCart(Long customerId) {
 
-        return cartRepository.findByCustomerId(customerId)
+        Customer customer = customerService.findCustomerById(customerId);
+
+        return cartRepository.findByCustomerCustomerId(customerId)
                 .orElseGet(() -> {
                     Cart cart = new Cart();
-                    cart.setCustomerId(customerId);
+                    cart.setCustomer(customer);
                     return cartRepository.save(cart);
                 });
     }
 
     public Cart getCartByCustomerId(Long customerId) {
 
-        return cartRepository.findByCustomerId(customerId)
+        return cartRepository.findByCustomerCustomerId(customerId)
                 .orElseThrow(() ->
                         new RuntimeException("Cart not found for customer id : " + customerId));
     }

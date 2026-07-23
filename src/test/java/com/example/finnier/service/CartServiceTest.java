@@ -1,6 +1,7 @@
 package com.example.finnier.service;
 
 import com.example.finnier.entity.Cart;
+import com.example.finnier.entity.Customer;
 import com.example.finnier.repository.CartRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,8 @@ class CartServiceTest {
 
     @Mock
     private CartRepository cartRepository;
-
+    @Mock
+    private CustomerService customerService;
     @InjectMocks
     private CartService cartService;
 
@@ -30,15 +32,16 @@ class CartServiceTest {
     @BeforeEach
     void setUp() {
         cart = new Cart();
+
         cart.setCartId(1L);
-        cart.setCustomerId(100L);
+        cart.setCustomer(Customer.builder().customerId(100L).build());
         cart.setCreatedAt(LocalDateTime.now());
     }
 
     @Test
     void createCart_shouldCreateNewCart_whenCustomerHasNoCart() {
 
-        when(cartRepository.findByCustomerId(100L))
+        when(cartRepository.findByCustomerCustomerId(100L))
                 .thenReturn(Optional.empty());
 
         when(cartRepository.save(any(Cart.class)))
@@ -47,16 +50,16 @@ class CartServiceTest {
         Cart result = cartService.createCart(100L);
 
         assertNotNull(result);
-        assertEquals(100L, result.getCustomerId());
+        assertEquals(100L, result.getCustomer().getCustomerId());
 
-        verify(cartRepository).findByCustomerId(100L);
+        verify(cartRepository).findByCustomerCustomerId(100L);
         verify(cartRepository).save(any(Cart.class));
     }
 
     @Test
     void createCart_shouldReturnExistingCart_whenCustomerAlreadyHasCart() {
 
-        when(cartRepository.findByCustomerId(100L))
+        when(cartRepository.findByCustomerCustomerId(100L))
                 .thenReturn(Optional.of(cart));
 
         Cart result = cartService.createCart(100L);
@@ -64,28 +67,28 @@ class CartServiceTest {
         assertNotNull(result);
         assertEquals(1L, result.getCartId());
 
-        verify(cartRepository).findByCustomerId(100L);
+        verify(cartRepository).findByCustomerCustomerId(100L);
         verify(cartRepository, never()).save(any(Cart.class));
     }
 
     @Test
     void getCartByCustomerId_shouldReturnCart() {
 
-        when(cartRepository.findByCustomerId(100L))
+        when(cartRepository.findByCustomerCustomerId(100L))
                 .thenReturn(Optional.of(cart));
 
         Cart result = cartService.getCartByCustomerId(100L);
 
         assertNotNull(result);
-        assertEquals(100L, result.getCustomerId());
+        assertEquals(100L, result.getCustomer().getCustomerId());
 
-        verify(cartRepository).findByCustomerId(100L);
+        verify(cartRepository).findByCustomerCustomerId(100L);
     }
 
     @Test
     void getCartByCustomerId_shouldThrowException_whenCartNotFound() {
 
-        when(cartRepository.findByCustomerId(100L))
+        when(cartRepository.findByCustomerCustomerId(100L))
                 .thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(
@@ -95,7 +98,7 @@ class CartServiceTest {
 
         assertEquals("Cart not found for customer id : 100", exception.getMessage());
 
-        verify(cartRepository).findByCustomerId(100L);
+        verify(cartRepository).findByCustomerCustomerId(100L);
     }
 
     @Test
@@ -103,7 +106,8 @@ class CartServiceTest {
 
         Cart cart2 = new Cart();
         cart2.setCartId(2L);
-        cart2.setCustomerId(200L);
+        new Customer();
+        cart2.setCustomer(Customer.builder().customerId(200L).build());
 
         when(cartRepository.findAll())
                 .thenReturn(List.of(cart, cart2));
