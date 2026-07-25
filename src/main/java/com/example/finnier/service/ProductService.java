@@ -41,6 +41,13 @@ public class ProductService {
                 ));
         return toResponseDto(product);
     }
+    public Product getProductEntityById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Product not found with id: " + productId
+                ));
+
+    }
 
     @Transactional
     public ProductResponseDto updateProduct(ProductRequestDto updateProductDto, Long productId) {
