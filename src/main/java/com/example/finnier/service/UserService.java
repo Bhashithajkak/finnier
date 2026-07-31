@@ -40,6 +40,11 @@ public class UserService {
         return mapToResponseDto(user);
     }
 
+    public User getUserEntityByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+    }
+
     public List<UserResponse> getAllUsers(){
         List<User> users = userRepository.findAll();
         return users.stream()
