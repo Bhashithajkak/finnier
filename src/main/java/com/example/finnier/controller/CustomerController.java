@@ -4,7 +4,7 @@ import com.example.finnier.dto.CustomerRequest;
 import com.example.finnier.dto.CustomerResponse;
 import com.example.finnier.service.CustomerService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
