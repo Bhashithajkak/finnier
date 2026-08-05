@@ -1,5 +1,6 @@
 package com.example.finnier.entity;
 
+import com.example.finnier.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

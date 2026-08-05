@@ -2,8 +2,10 @@ package com.example.finnier.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,7 +21,13 @@ public class Customer {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+    private String phoneNumber;
+    private String address;
     private int loyaltyPoints;
-    private LocalDate dateJoined;
+    @CreationTimestamp
+    private LocalDateTime dateJoined;
+    @UpdateTimestamp
+    private LocalDateTime lastUpdated;
+
 
 }

@@ -1,4 +1,4 @@
-package com.example.finnier.entity;
+package com.example.finnier.enums;
 public enum PaymentStatus{
     UNPAID,
     PAID,
