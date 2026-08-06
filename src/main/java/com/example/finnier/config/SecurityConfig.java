@@ -38,6 +38,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // Permit for swagger
+                        .requestMatchers("/swagger-ui/**",
+                                "/v3/api-docs/**").permitAll()
                         // Permit all public URLs
                         .requestMatchers(PUBLIC_URLS).permitAll()
                         // Require authentication for user private URLs

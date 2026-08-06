@@ -24,6 +24,8 @@ public class JwtService {
     @Value("${security.jwt.refresh-token-expiration-time}")
     private long refreshTokenExpiration;
 
+    private final String ISSUER = "Finnier";
+
     public String generateAccessToken(User user){
         try{
             Map<String, Object> claims = new HashMap<>();
@@ -35,7 +37,7 @@ public class JwtService {
             return Jwts.builder()
                     .setClaims(claims)
                     .setSubject(user.getEmail())
-                    .setIssuer("Finnier")
+                    .setIssuer(ISSUER)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS512)
@@ -58,11 +60,18 @@ public class JwtService {
             throw new TokenValidationException("Invalid JWT signature ");
         }catch (IllegalArgumentException e){
             throw new TokenValidationException("JWT token compact string is invalid ");
+        }catch (IncorrectClaimException e) {
+            throw new TokenValidationException("Invalid JWT claims");
         }
     }
     public String extractUserRoleFromToken(String token){
         Claims claims = validateToken(token);
         return claims.get("role", String.class);
+    }
+
+    public String extractEmailFromToken(String token){
+        Claims claims = validateToken(token);
+        return claims.getSubject();
     }
 
     private SecretKey getSigningKey(){
@@ -73,7 +82,7 @@ public class JwtService {
     private Claims parseClaims(String token){
         return Jwts.parser()
                 .verifyWith(getSigningKey())
-                .requireIssuer("Finnier")
+                .requireIssuer(ISSUER)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

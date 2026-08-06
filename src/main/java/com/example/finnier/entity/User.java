@@ -71,7 +71,7 @@ public class User implements UserDetails {
     }
 
     public enum RoleType {
-        ADMIN, USER, MANAGER
+        ADMIN, USER, STAFF
     }
     public enum UserStatus {
         ACTIVE, INACTIVE, SUSPENDED
