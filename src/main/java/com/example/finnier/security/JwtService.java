@@ -47,6 +47,27 @@ public class JwtService {
         }
     }
 
+    public String generateRefreshToken(User user){
+        try{
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("userId",user.getUserId());
+            claims.put("status",user.getStatus());
+            claims.put("role", user.getRole().name());
+            claims.put("tokenType", JWTTokenType.REFRESH_TOKEN);
+
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setSubject(user.getEmail())
+                    .setIssuer(ISSUER)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                    .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                    .compact();
+        }catch (Exception e){
+            throw new TokenGenerationException("Failed to generate refresh token" ,e);
+        }
+    }
+
     public Claims validateToken(String token){
         try{
             return parseClaims(token);
@@ -72,6 +93,11 @@ public class JwtService {
     public String extractEmailFromToken(String token){
         Claims claims = validateToken(token);
         return claims.getSubject();
+    }
+
+    public boolean isRefreshToken(String token){
+        Claims claims = validateToken(token);
+        return claims.get("tokenType", String.class).equals(JWTTokenType.REFRESH_TOKEN.name());
     }
 
     private SecretKey getSigningKey(){
