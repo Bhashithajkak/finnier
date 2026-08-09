@@ -50,6 +50,7 @@ public class User implements UserDetails {
         return email;
     }
 
+
     @Override
     public boolean isAccountNonExpired() {
         return !(status == UserStatus.INACTIVE);
@@ -71,7 +72,7 @@ public class User implements UserDetails {
     }
 
     public enum RoleType {
-        ADMIN, USER, STAFF
+        ADMIN, STAFF, CUSTOMER
     }
     public enum UserStatus {
         ACTIVE, INACTIVE, SUSPENDED

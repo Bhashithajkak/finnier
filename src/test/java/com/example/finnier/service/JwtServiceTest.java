@@ -39,7 +39,7 @@ class JwtServiceTest {
 
         user.setUserId(1L);
         user.setEmail("test@gmail.com");
-        user.setRole(User.RoleType.USER);
+        user.setRole(User.RoleType.CUSTOMER);
         user.setStatus(User.UserStatus.ACTIVE);
     }
 

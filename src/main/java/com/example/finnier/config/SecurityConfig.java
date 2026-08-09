@@ -87,7 +87,10 @@ public class SecurityConfig {
             "/api/product/**",
 
             // Category management
-            "/api/categories/**"
+            "/api/categories/**",
+
+            // Order management
+            "/api/orders/**"
     };
 
     @Bean

@@ -67,7 +67,7 @@ public class AuthService {
                 .lastName(request.lastName())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(User.RoleType.USER)
+                .role(User.RoleType.CUSTOMER)
                 .status(User.UserStatus.ACTIVE)
                 .build();
 
@@ -93,4 +93,5 @@ public class AuthService {
 
         return new AuthResponse(newAccessToken, refreshToken);
     }
+
 }
