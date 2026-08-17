@@ -1,7 +1,9 @@
 package com.example.finnier.enums;
 
 public enum PaymentMethod {
-    Card,
-    Bank_Transfer,
-    Cash_on_Delivery
+    CARD,
+    BANK_TRANSFER,
+    CASH_ON_DELIVERY,
+    SAVED_CARD
 }
+

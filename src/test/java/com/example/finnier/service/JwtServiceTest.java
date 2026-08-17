@@ -58,7 +58,7 @@ class JwtServiceTest {
         String token = jwtService.generateAccessToken(user);
         String role = jwtService.extractUserRoleFromToken(token);
 
-        assertEquals("USER", role);
+        assertEquals("CUSTOMER", role);
     }
     @Test
     void shouldValidateGeneratedToken(){

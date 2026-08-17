@@ -69,7 +69,11 @@ public class SecurityConfig {
 
             // Public category browsing
             "/api/categories",
-            "/api/categories/{id}"
+            "/api/categories/{id}",
+
+            // Gateway Webhook (verified cryptographically by HMAC signature)
+            "/api/payments/webhook",
+            "/api/payments/mock-trigger-async-webhook"
     };
 
     private static final String[] PRIVATE_URLS = {
@@ -90,7 +94,10 @@ public class SecurityConfig {
             "/api/categories/**",
 
             // Order management
-            "/api/orders/**"
+            "/api/orders/**",
+
+            // Payment operations
+            "/api/payments/**"
     };
 
     @Bean
