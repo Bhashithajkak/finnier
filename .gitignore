@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+/.env
+
+### data volumes ###
+/mysql_data
+/rabbitmq_data
+

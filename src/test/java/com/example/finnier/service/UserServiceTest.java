@@ -48,7 +48,7 @@ class UserServiceTest {
                 .lastName("Doe")
                 .email("jane.doe@example.com")
                 .password("encodedPassword")
-                .role(User.RoleType.USER)
+                .role(User.RoleType.CUSTOMER)
                 .status(User.UserStatus.ACTIVE)
                 .build();
 
@@ -57,7 +57,7 @@ class UserServiceTest {
                 "Doe",
                 "jane.doe@example.com",
                 "plainPassword",
-                User.RoleType.USER,
+                User.RoleType.CUSTOMER,
                 User.UserStatus.ACTIVE
         );
     }
@@ -160,7 +160,7 @@ class UserServiceTest {
                 .lastName("User")
                 .email("inactive@example.com")
                 .password("encoded")
-                .role(User.RoleType.USER)
+                .role(User.RoleType.CUSTOMER)
                 .status(User.UserStatus.INACTIVE)
                 .build();
 

@@ -24,6 +24,8 @@ public class JwtService {
     @Value("${security.jwt.refresh-token-expiration-time}")
     private long refreshTokenExpiration;
 
+    private final String ISSUER = "Finnier";
+
     public String generateAccessToken(User user){
         try{
             Map<String, Object> claims = new HashMap<>();
@@ -35,13 +37,34 @@ public class JwtService {
             return Jwts.builder()
                     .setClaims(claims)
                     .setSubject(user.getEmail())
-                    .setIssuer("Finnier")
+                    .setIssuer(ISSUER)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                     .compact();
         }catch (Exception e){
             throw new TokenGenerationException("Failed to generate access token" ,e);
+        }
+    }
+
+    public String generateRefreshToken(User user){
+        try{
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("userId",user.getUserId());
+            claims.put("status",user.getStatus());
+            claims.put("role", user.getRole().name());
+            claims.put("tokenType", JWTTokenType.REFRESH_TOKEN);
+
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setSubject(user.getEmail())
+                    .setIssuer(ISSUER)
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                    .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                    .compact();
+        }catch (Exception e){
+            throw new TokenGenerationException("Failed to generate refresh token" ,e);
         }
     }
 
@@ -58,11 +81,23 @@ public class JwtService {
             throw new TokenValidationException("Invalid JWT signature ");
         }catch (IllegalArgumentException e){
             throw new TokenValidationException("JWT token compact string is invalid ");
+        }catch (IncorrectClaimException e) {
+            throw new TokenValidationException("Invalid JWT claims");
         }
     }
     public String extractUserRoleFromToken(String token){
         Claims claims = validateToken(token);
         return claims.get("role", String.class);
+    }
+
+    public String extractEmailFromToken(String token){
+        Claims claims = validateToken(token);
+        return claims.getSubject();
+    }
+
+    public boolean isRefreshToken(String token){
+        Claims claims = validateToken(token);
+        return claims.get("tokenType", String.class).equals(JWTTokenType.REFRESH_TOKEN.name());
     }
 
     private SecretKey getSigningKey(){
@@ -73,7 +108,7 @@ public class JwtService {
     private Claims parseClaims(String token){
         return Jwts.parser()
                 .verifyWith(getSigningKey())
-                .requireIssuer("Finnier")
+                .requireIssuer(ISSUER)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

@@ -38,7 +38,7 @@ public class CustomerServiceTest {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setEmail("johndoe@gmail.com");
-        user.setRole(User.RoleType.USER);
+        user.setRole(User.RoleType.CUSTOMER);
 
         customer = new Customer();
         customer.setCustomerId(1L);

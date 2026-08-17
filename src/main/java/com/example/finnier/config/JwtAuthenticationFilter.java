@@ -39,23 +39,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         try{
             final String jwt = authHeader.substring(7);
-            final String email = jwtService.validateToken(jwt).getSubject();
+            final String email = jwtService.extractEmailFromToken(jwt);
 
             Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
 
             if(email != null && currentAuth == null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                if ((jwtService.validateToken(jwt).getSubject()).equals(userDetails.getUsername()) ){
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-                    log.debug("User authenticated: {}", email);
+                if (!userDetails.isEnabled()) {
+                    throw new IllegalStateException("User account is disabled");
                 }
+
+                if (!userDetails.isAccountNonExpired()) {
+                    throw new IllegalStateException("User account has expired");
+                }
+
+                if (!userDetails.isAccountNonLocked()) {
+                    throw new IllegalStateException("User account is locked");
+                }
+
+                if (!userDetails.isCredentialsNonExpired()) {
+                    throw new IllegalStateException("User credentials have expired");
+                }
+
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                log.debug("User authenticated: {}", email);
+
             }
             filterChain.doFilter(request,response);
         }catch (Exception e){

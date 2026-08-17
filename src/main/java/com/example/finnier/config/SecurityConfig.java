@@ -38,10 +38,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        // Permit for swagger
+                        .requestMatchers("/swagger-ui/**",
+                                "/v3/api-docs/**").permitAll()
                         // Permit all public URLs
                         .requestMatchers(PUBLIC_URLS).permitAll()
                         // Require authentication for user private URLs
-                        .requestMatchers(USER_PRIVATE_URLS).authenticated()
+                        .requestMatchers(PRIVATE_URLS).authenticated()
                         .anyRequest().denyAll())
                 .sessionManagement(session-> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,20 +55,55 @@ public class SecurityConfig {
     }
 
     private static final String[] PUBLIC_URLS = {
-            "/api/product/",
-            "/api/product/{id}"
 
+            // Authentication
+            "/api/auth/**",
+
+            // Swagger / OpenAPI
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+
+            // Public product browsing
+            "/api/product",
+            "/api/product/{id}",
+
+            // Public category browsing
+            "/api/categories",
+            "/api/categories/{id}",
+
+            // Gateway Webhook (verified cryptographically by HMAC signature)
+            "/api/payments/webhook",
+            "/api/payments/mock-trigger-async-webhook"
     };
 
-    private static final String[] USER_PRIVATE_URLS = {
-            "/api/cart/{customerId}",
+    private static final String[] PRIVATE_URLS = {
 
+            // User management
+            "/api/users/**",
+
+            // Customer management
+            "/api/customers/**",
+
+            // Cart management
+            "/api/carts/**",
+
+            // Product management
+            "/api/product/**",
+
+            // Category management
+            "/api/categories/**",
+
+            // Order management
+            "/api/orders/**",
+
+            // Payment operations
+            "/api/payments/**"
     };
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
